@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - CoalGuard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        /* Global Color Scheme */
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #e94560;
+            --accent-color: #0f3460;
+            --text-light: #ffffff;
+            --text-dark: #eeeeee;
+            --bg-color: #16213e;
+        }
+
+        /* Page Background */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--primary-color);
+        }
+
+        .navbar-brand,
+        .nav-link {
+            color: var(--text-light) !important;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-color) !important;
+        }
+
+        /* Page Content Styling */
+        .container {
+            max-width: 900px;
+        }
+
+        .about-title {
+            color: var(--secondary-color);
+            animation: fadeInDown 1s ease;
+        }
+
+        .about-text {
+            color: var(--text-dark);
+            line-height: 1.8;
+        }
+
+        /* Interactive Team Cards */
+        .card {
+            background-color: var(--accent-color);
+            color: var(--text-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .card img {
+            height: 180px;
+            object-fit: cover;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: var(--text-dark);
+            padding: 40px 0;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .footer-social-icons a {
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        .footer-social-icons a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html"><img src="images/coal-svgrepo-com.svg" alt="Logo" height="36">
+                CoalGuard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="about.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- About Section -->
+    <div class="container py-5">
+        <h2 class="about-title text-center mb-4">About CoalGuard</h2>
+        <p class="about-text">CoalGuard is dedicated to securing and monitoring coal resources. Our platform offers
+            real-time tracking, advanced analytics, and secure solutions to optimize coal resource management, ensuring
+            efficient and sustainable use. CoalGuard brings cutting-edge technology and industry expertise together for
+            a sustainable energy future.</p>
+
+        <h3 class="text-center mt-5">Our Team</h3>
+        <div id="teamCarousel" class="carousel slide" data-bs-ride="carousel">
+            <!-- Carousel items -->
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="card text-center">
+                        <img src="images/team1.jpg" class="card-img-top" alt="Team Member 1">
+                        <div class="card-body">
+                            <h5 class="card-title">Khushbu Jain</h5>
+                            <p class="card-text">Team Leader</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="card text-center">
+                        <img src="images/team2.jpg" class="card-img-top" alt="Team Member 2">
+                        <div class="card-body">
+                            <h5 class="card-title">Srijan Agrawal</h5>
+                            <p class="card-text">Team Member</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="card text-center">
+                        <img src="images/team3.jpg" class="card-img-top" alt="Team Member 3">
+                        <div class="card-body">
+                            <h5 class="card-title">Krrish Agarwal</h5>
+                            <p class="card-text">Team Member</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="card text-center">
+                        <img src="images/team4.jpg" class="card-img-top" alt="Team Member 4">
+                        <div class="card-body">
+                            <h5 class="card-title">Jayesh Sharma</h5>
+                            <p class="card-text">Team Member</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carousel controls (arrows) -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#teamCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#teamCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+    <div>
+        <footer class="text-center text-light bg-dark py-4">
+            <div class="container">
+                <div class="row">
+                    <section class="col-md-4 mb-4">
+                        <h5 class="text-uppercase font-weight-bold">Quick Links</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="index.html" class="text-light">Home</a></li>
+                            <li><a href="about.html" class="text-light">About Us</a></li>
+                            <li><a href="#services" class="text-light">Services</a></li>
+                            <li><a href="#" class="text-light">Contact</a></li>
+                        </ul>
+                    </section>
+                    <section class="col-md-4 mb-4">
+                        <h5 class="text-uppercase font-weight-bold">Our Services</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="#" class="text-light">Real-Time Monitoring</a></li>
+                            <li><a href="#" class="text-light">Advanced Analytics</a></li>
+                            <li><a href="#" class="text-light">Secure Solutions</a></li>
+                        </ul>
+                    </section>
+                    <section class="col-md-4 mb-4">
+                        <h5 class="text-uppercase font-weight-bold">Follow Us</h5>
+                        <div class="row footer-social-icons mb-2 ">
+                            <div class="row d-inline-flex align-items-center justify-content-start">
+                                <!-- Your icons here -->
+                                <a href="#" class="text-light mx-2" style="font-size: 17px;">
+                                    <img src="images/facebook.png" alt="" height="30px">Facebook
+                                </a>
+                                <a href="#" class="text-light mx-2" style="font-size: 17px;">
+                                    <img src="images/instagram.png" alt="" height="30px">Instagram
+                                </a>
+                                <a href="#" class="text-light mx-2" style="font-size: 17px;">
+                                    <img src="images/gmail.png" alt="" height="30px">Gmail
+                                </a>
+                            </div>
+                        </div>
+
+                    </section>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <hr class="bg-light">
+                        <p class="mb-0">Designed by Hit-N-Run</p>
+                        <p class="mb-0">© 2024 CoalGuard, Inc. All Rights Reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
