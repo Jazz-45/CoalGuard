@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Truck Tracking System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .tracking-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 800px;
+            width: 90%;
+            margin: 2rem;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .header-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .header-image:hover {
+            transform: scale(1.02);
+        }
+
+        .tracking-title {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .custom-input-group {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .custom-input-group:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .custom-input {
+            border: none;
+            padding: 1rem;
+            font-size: 1.1rem;
+            background: transparent;
+        }
+
+        .custom-input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .track-btn {
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #4481eb, #04befe);
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .track-btn:hover {
+            background: linear-gradient(45deg, #04befe, #4481eb);
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #dc3545;
+            display: none;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .trucks-list {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .truck-item {
+            padding: 1rem 1.5rem;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .truck-item:hover {
+            border-left-color: #4481eb;
+            background: #f8f9fa;
+        }
+
+        .truck-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .truck-icon {
+            font-size: 1.5rem;
+            color: #4481eb;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: linear-gradient(45deg, #4481eb, #04befe);
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .tracking-container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .tracking-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tracking-container">
+        <div class="input-section">
+            <h4 class="mb-4">Graph for Your Vehicle</h4>
+            <div class="custom-input-group d-flex">
+                <input type="number" class="form-control custom-input" id="truckId" placeholder="Enter Truck ID (1-3)"
+                    min="1" max="3">
+                <button class="btn track-btn" onclick="trackTruck()">
+                    <i class="fas fa-search me-2"></i>Plot
+                </button>
+            </div>
+            <div id="errorMessage" class="error-message">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                Please enter a valid truck ID between 1 and 3.
+            </div>
+        </div>
+
+        <div class="available-trucks">
+            <h4 class="mb-4">Available Trucks</h4>
+            <div class="trucks-list">
+                <div class="truck-item">
+                    <div class="truck-info">
+                        <i class="fas fa-truck truck-icon"></i>
+                        <div>
+                            <h5 class="mb-0">Truck #1</h5>
+                            <small class="text-muted">Last updated: 2 mins ago</small>
+                        </div>
+                    </div>
+                    <span id="truck-1" class="status-badge">Active</span>
+                </div>
+                <div class="truck-item">
+                    <div class="truck-info">
+                        <i class="fas fa-truck truck-icon"></i>
+                        <div>
+                            <h5 class="mb-0">Truck #2</h5>
+                            <small class="text-muted">Last updated: 5 mins ago</small>
+                        </div>
+                    </div>
+                    <span id="truck-2"class="status-badge">Active</span>
+                </div>
+                <div class="truck-item">
+                    <div class="truck-info">
+                        <i class="fas fa-truck truck-icon"></i>
+                        <div>
+                            <h5 class="mb-0">Truck #3</h5>
+                            <small class="text-muted">Last updated: 1 min ago</small>
+                        </div>
+                    </div>
+                    <!-- <button id="truck-3"> <span  class="status-badge">Active</span></button> -->
+                    <span class="status-badge">Active</span>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function trackTruck() {
+            const truckId = document.getElementById('truckId').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (truckId >= 1 && truckId <= 3) {
+                errorMessage.style.display = 'none';
+                window.location.href = `chart${truckId}.html`;
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        // let  t3=doucment.body.getElementById("truck-3").addEventListener("onClick")
+        // t1.addEventListener("click", function () {
+        //         // Open a new tab with the specified URL
+        //         window.open("index3.html", "_blank");
+        //     });
+
+        // Allow Enter key to submit
+        document.getElementById('truckId').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                trackTruck();
+            }
+        });
+    </script>
+</body>
+
+</html>
