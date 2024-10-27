@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "nodemailer": "^6.9.15",
+    "papaparse": "^5.4.1"
+  }
+}
