@@ -1,31 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPS Tracking with Summary</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+        }
         .map-container { 
             margin: 20px 0;
         }
         #live-map, #summary-map { 
             height: 500px; 
             width: 100%;
-            margin: 10px 0;
+            border-radius: 8px;
+            overflow: hidden;
         }
         #controls {
             margin: 10px 0;
             padding: 10px;
+            text-align: center;
         }
         #controls button {
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        #controls button:hover {
+            background-color: #45a049;
         }
         .summary-container {
             display: none;
             margin-top: 30px;
         }
         .stop-marker {
+            text-align: center;
+            font-size: 20px;
+        }
+        .loader {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            animation: bounce 0.5s infinite alternate;
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+        .status-info {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
             text-align: center;
         }
     </style>
@@ -36,6 +73,7 @@
         <div id="live-map"></div>
         <div id="controls">
             <button id="startTracking">Start Tracking</button>
+            <div class="status-info" id="statusInfo">Ready to start tracking.</div>
         </div>
     </div>
 
@@ -71,9 +109,15 @@
         // Start the tracking simulation
         async function startTracking() {
             document.getElementById('startTracking').disabled = true;
+            document.getElementById('statusInfo').innerHTML = 'Tracking...';
+            const loader = document.createElement('span');
+            loader.classList.add('loader');
+            document.getElementById('controls').appendChild(loader);
             
             try {
                 const response = await fetch('./Datasets/d2_linestring.geojson');
+                if (!response.ok) throw new Error('Network response was not ok');
+                
                 const geojsonData = await response.json();
                 const coordinates = geojsonData.features[0].geometry.coordinates;
                 
@@ -91,7 +135,10 @@
                 
             } catch (error) {
                 console.error('Error loading GeoJSON:', error);
+                document.getElementById('statusInfo').innerHTML = 'Error loading data. Try again.';
+            } finally {
                 document.getElementById('startTracking').disabled = false;
+                document.querySelector('.loader').remove();
             }
         }
 
@@ -143,7 +190,7 @@
                 })
             }).addTo(summaryMap).bindPopup('End Point');
 
-            // Add stop points (you can define your own criteria for stops)
+            // Add stop points
             detectStops().forEach(stopPoint => {
                 L.marker(stopPoint, {
                     icon: L.divIcon({
@@ -158,10 +205,11 @@
             summaryMap.fitBounds(summaryPolyline.getBounds());
 
             // Reset the start button
+            document.getElementById('statusInfo').innerHTML = 'Tracking complete!';
             document.getElementById('startTracking').disabled = false;
         }
 
-        // Helper function to detect stops (customize based on your needs)
+        // Helper function to detect stops
         function detectStops() {
             const stops = [];
             const minStopDuration = 3; // Number of consecutive similar positions to consider a stop
