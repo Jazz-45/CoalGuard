@@ -38,6 +38,7 @@ function sendEmailAlert(anomaly) {
 }
 
 // Function to detect anomalies
+// This Function detect anomalies on the gas concentration values
 function detectAnomalies(data) {
     const anomalies = [];
 
