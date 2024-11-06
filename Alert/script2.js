@@ -10,16 +10,16 @@ const CH4_THRESHOLD = 0.5;
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'jkhushbu970@gmail.com',
-        pass: 'muak vdja qmra ovtz'  // Use environment variables for security
+        user: '123@gmail.com',
+        pass: 'abcd-1234-acbd-1234'  // Use environment variables for security
     }
 });
 
 // Function to send alert email
 function sendEmailAlert(anomaly) {
     const mailOptions = {
-        from: 'jkhushbu970@gmail.com',
-        to: 'akrrish49@gmail.com',
+        from: '123@gmail.com',
+        to: '123@gmail.com',
         subject: `Anomaly Detected at ${anomaly.location.latitude}, ${anomaly.location.longitude}`,
         text: `
             Anomaly detected at location (${anomaly.location.latitude}, ${anomaly.location.longitude})
