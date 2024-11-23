@@ -1,6 +1,6 @@
 # CoalGuard: Real-Time Monitoring of Coal Transportation
 
-## Problem Statement
+## Problem Statement :-
 
 Coal theft during transportation poses significant challenges to the mining industry, leading to substantial financial losses and operational inefficiencies. Criminals often tamper with coal loads by adding water, which maintains the overall weight and makes detection difficult with traditional monitoring methods. Existing systems are often manual or limited in scope, lacking the capability for real-time tracking, load monitoring, and anomaly detection.
 
