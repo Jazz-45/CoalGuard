@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Sensor Data Analysis</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            width: 90%;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        #loading {
+            text-align: center;
+            color: #666;
+            margin: 20px;
+            font-size: 18px;
+        }
+        .error {
+            color: #ff0000;
+            text-align: center;
+            margin: 20px;
+            font-size: 16px;
+        }
+        .chart-title {
+            text-align: center;
+            color: #444;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        /* Add debug info styling */
+        #debugInfo {
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Vehicle Sensor Data Analysis</h1>
+    <div id="loading">Loading data...</div>
+    <div id="debugInfo"></div>
+    <div class="chart-container">
+        <div class="chart-title">Temperature vs Time</div>
+        <canvas id="temperatureChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <div class="chart-title">Humidity vs Time</div>
+        <canvas id="humidityChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <div class="chart-title">Tyre Pressure vs Time</div>
+        <canvas id="pressureChart"></canvas>
+    </div>
+
+    <script>
+        // Function to parse CSV data with debug logging
+        function parseCSVData(csv) {
+            const lines = csv.split('\n');
+            const headers = lines[0].split(',');
+            
+            // Debug: Log headers
+            console.log('CSV Headers:', headers);
+            
+            const data = lines.slice(1)
+                .filter(line => line.trim() !== '')
+                .map((line, index) => {
+                    const values = line.split(',');
+                    const entry = {};
+                    
+                    headers.forEach((header, i) => {
+                        const value = values[i];
+                        entry[header.trim()] = value; // Trim header to remove any whitespace
+                    });
+                    
+                    // Convert specific fields to numbers
+                    const parsedEntry = {
+                        time: entry.time,
+                        temperature: parseFloat(entry.temperature),
+                        humidity: parseFloat(entry.humidity), // This should now correctly parse humidity
+                        tyre_pressure: parseFloat(entry.tyre_pressure)
+                    };
+                    
+                    // Debug: Log first entry
+                    if (index === 0) {
+                        console.log('Sample Entry:', parsedEntry);
+                    }
+                    
+                    return parsedEntry;
+                });
+            
+            return data;
+        }
+
+        // Function to create a chart
+        function createChart(canvasId, data, config) {
+            const ctx = document.getElementById(canvasId);
+            
+            // Debug: Log data for this specific chart
+            console.log(`Creating ${canvasId} with ${data.length} data points`);
+            console.log('First data point:', data[0]);
+            
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(entry => entry.time),
+                    datasets: [{
+                        label: config.label,
+                        data: data.map(entry => entry[config.dataKey]),
+                        borderColor: config.color,
+                        backgroundColor: config.backgroundColor,
+                        tension: 0.1,
+                        pointRadius: 4,
+                        pointHoverRadius: 7,
+                        borderWidth: 2,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `${config.label}: ${context.parsed.y.toFixed(1)}${config.unit}`;
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: `${config.label} ${config.unit}`
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + config.unit;
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+
+        function showError(message) {
+            const loadingDiv = document.getElementById('loading');
+            loadingDiv.innerHTML = `<div class="error">Error: ${message}</div>`;
+        }
+
+        function createCharts(data) {
+            const chartConfigs = {
+                temperatureChart: {
+                    label: 'Temperature',
+                    dataKey: 'temperature',
+                    color: 'rgb(255, 99, 132)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                    unit: '°C'
+                },
+                humidityChart: {
+                    label: 'Humidity',
+                    dataKey: 'humidity',
+                    color: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                    unit: '%'
+                },
+                pressureChart: {
+                    label: 'Tyre Pressure',
+                    dataKey: 'tyre_pressure',
+                    color: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                    unit: ' PSI'
+                }
+            };
+
+            Object.entries(chartConfigs).forEach(([chartId, config]) => {
+                try {
+                    createChart(chartId, data, config);
+                } catch (error) {
+                    console.error(`Error creating ${chartId}:`, error);
+                    showError(`Failed to create ${config.label} chart: ${error.message}`);
+                }
+            });
+        }
+
+        async function loadData() {
+            try {
+                const response = await fetch('data2.csv');
+                if (!response.ok) {
+                    throw new Error('Failed to load data file');
+                }
+                const csvText = await response.text();
+                
+                // Debug: Log first few lines of CSV
+                console.log('First few lines of CSV:', csvText.split('\n').slice(0, 3));
+                
+                const data = parseCSVData(csvText);
+                
+                // Validate data
+                if (data.length === 0) {
+                    throw new Error('No data parsed from CSV');
+                }
+                
+                if (!data[0].hasOwnProperty('humidity')) {
+                    throw new Error('Humidity data not found in CSV');
+                }
+                
+                document.getElementById('loading').style.display = 'none';
+                createCharts(data);
+                
+            } catch (error) {
+                showError(error.message);
+                console.error('Error loading data:', error);
+            }
+        }
+
+        // Load data when page loads
+        loadData();
+    </script>
+</body>
+</html>

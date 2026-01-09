@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Tracking with Summary</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 90%;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin: 20px auto;
+        }
+
+        .map-container {
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        #live-map, #summary-map {
+            height: 400px;
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 12px;
+        }
+
+        #controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #startTracking {
+            background: linear-gradient(45deg, #4CAF50, #81C784);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        #startTracking:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #startTracking:hover {
+            background: linear-gradient(45deg, #81C784, #4CAF50);
+            transform: scale(1.05);
+        }
+
+        .summary-container {
+            display: none;
+            margin-top: 40px;
+        }
+
+        .stop-marker {
+            text-align: center;
+        }
+
+        .stop-marker i {
+            font-size: 18px;
+            color: red;
+        }
+
+        .status-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #81C784;
+            margin: 0 3px;
+            animation: bounce 0.5s infinite alternate;
+        }
+
+        .loader:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loader:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="map-container">
+            <h2>Live Tracking</h2>
+            <div id="live-map"></div>
+            <div id="controls">
+                <button id="startTracking">
+                    <span>Start Tracking</span>
+                    <div class="loader-container" style="display: none;">
+                        <span class="loader"></span>
+                        <span class="loader"></span>
+                        <span class="loader"></span>
+                    </div>
+                </button>
+                <div class="status-info" id="statusInfo">Ready to start tracking.</div>
+            </div>
+        </div>
+
+        <div class="summary-container" id="summarySection">
+            <h2>Journey Summary</h2>
+            <div id="summary-map"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        let liveMap, summaryMap, currentMarker, pathPolyline;
+        let trackingData = [];
+        const simulationSpeed = 50;
+
+        function initializeLiveMap() {
+            liveMap = L.map('live-map').setView([0, 0], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(liveMap);
+        }
+
+        function initializeSummaryMap() {
+            summaryMap = L.map('summary-map').setView([0, 0], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(summaryMap);
+        }
+
+        async function startTracking() {
+            const button = document.getElementById('startTracking');
+            const statusInfo = document.getElementById('statusInfo');
+            button.disabled = true;
+            statusInfo.innerHTML = 'Loading data...';
+            document.querySelector('.loader-container').style.display = 'inline-flex';
+
+            try {
+                const response = await fetch('./Datasets/d1_linestring.geojson');
+                const geojsonData = await response.json();
+                const coordinates = geojsonData.features[0].geometry.coordinates;
+                trackingData = coordinates.map(coord => [coord[1], coord[0]]);
+
+                if (!currentMarker) {
+                    currentMarker = L.marker(trackingData[0]).addTo(liveMap);
+                    pathPolyline = L.polyline([], { color: 'blue' }).addTo(liveMap);
+                }
+
+                liveMap.setView(trackingData[0], 13);
+                statusInfo.innerHTML = 'Tracking in progress...';
+                simulateTracking(0);
+
+            } catch (error) {
+                console.error('Error loading GeoJSON:', error);
+                statusInfo.innerHTML = 'Error loading data. Try again.';
+                button.disabled = false;
+            }
+        }
+
+        function simulateTracking(index) {
+            if (index >= trackingData.length) {
+                trackingComplete();
+                return;
+            }
+
+            const position = trackingData[index];
+            currentMarker.setLatLng(position);
+            pathPolyline.addLatLng(position);
+            liveMap.panTo(position);
+
+            setTimeout(() => simulateTracking(index + 1), simulationSpeed);
+        }
+
+        function trackingComplete() {
+            document.getElementById('summarySection').style.display = 'block';
+            const button = document.getElementById('startTracking');
+            button.disabled = false;
+            document.querySelector('.loader-container').style.display = 'none';
+
+            if (!summaryMap) initializeSummaryMap();
+
+            const summaryPolyline = L.polyline(trackingData, { color: 'blue', weight: 3 }).addTo(summaryMap);
+            L.marker(trackingData[0], { icon: L.divIcon({ className: 'stop-marker', html: '🟢', iconSize: [20, 20] }) }).addTo(summaryMap).bindPopup('Start Point');
+            L.marker(trackingData[trackingData.length - 1], { icon: L.divIcon({ className: 'stop-marker', html: '🔴', iconSize: [20, 20] }) }).addTo(summaryMap).bindPopup('End Point');
+            
+            detectStops().forEach(stopPoint => {
+                L.marker(stopPoint, { icon: L.divIcon({ className: 'stop-marker', html: '🛑', iconSize: [20, 20] }) }).addTo(summaryMap).bindPopup('Stop Point');
+            });
+
+            summaryMap.fitBounds(summaryPolyline.getBounds());
+            document.getElementById('statusInfo').innerHTML = 'Tracking complete.';
+        }
+
+        function detectStops() {
+            const stops = [];
+            const minStopDuration = 3;
+            let similarPositionsCount = 0;
+            let lastPosition = null;
+
+            trackingData.forEach(position => {
+                if (lastPosition) {
+                    const distance = calculateDistance(lastPosition, position);
+                    if (distance < 0.0001) {
+                        similarPositionsCount++;
+                        if (similarPositionsCount === minStopDuration) {
+                            stops.push(position);
+                        }
+                    } else {
+                        similarPositionsCount = 0;
+                    }
+                }
+                lastPosition = position;
+            });
+
+            return stops;
+        }
+
+        function calculateDistance(point1, point2) {
+            const [lat1, lon1] = point1;
+            const [lat2, lon2] = point2;
+            return Math.sqrt(Math.pow(lat2 - lat1, 2) + Math.pow(lon2 - lon1, 2));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeLiveMap();
+            document.getElementById('startTracking').addEventListener('click', startTracking);
+        });
+    </script>
+</body>
+</html>

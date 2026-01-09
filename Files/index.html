@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoalGuard-Solution for Coal Theft</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        /* Global Colors */
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <span class="hamburger-btn material-symbols-rounded">menu</span>
+            <a href="#" class="logo">
+                <img src="images/coal-svgrepo-com.svg" alt="logo">
+                <h2>CoalGuard</h2>
+            </a>
+            <ul class="links">
+                <span class="close-btn material-symbols-rounded">close</span>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Analytics</a></li>
+                <li><a href="truckID.html">Tracking</a></li>
+                <li><a href="about.html">About us</a></li>
+                <li><a href="#">Contact us</a></li>
+            </ul>
+            <span><button class="login-btn">LOG IN</button></span>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="hero text-center d-flex flex-column justify-content-center align-items-center">
+        <h1 class="display-4 fw-bold">Welcome to CoalGuard</h1>
+        <p class="lead mb-4">Monitoring & Securing Coal Resources for a Sustainable Future</p>
+        <a href="#services" class="btn btn-primary btn-lg px-4">Get Started</a>
+    </div>
+
+    <!-- Services Section -->
+    <div class="container py-5 h-100 d-flex  justify-content-center align-items-center " id="services">
+        <div class="row g-5">
+            <div class="col-md-4 service-card">
+                <div class="card" style="width: 18rem;">
+                    <img src="images/mapvec.jpg" height="200px" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Real-Time Tracking</h5>
+                        <p class="card-text">Real-time tracking enables continuous monitoring of coal transport,
+                            providing location updates and route deviations
+                            instantly, ensuring timely detection of theft or tampering during transit.</p>
+                        <a href="truckID.html" class="btn btn-primary" onclick="openInNewTabWithDelay(event)">Track</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 service-card">
+                <div class="card" style="width: 18rem;">
+                    <img src="images/graphvec.jpg" height="200px" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Graph Plotting </h5>
+                        <p class="card-text">Graph plotting visually represents data patterns, and anomalies, making it
+                            easier to analyze and interpret
+                            insights. It enhances understanding by showcasing relationships and distributions across
+                            various variables.</p>
+                        <a href="truckID2.html" class="btn btn-primary">Plot</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 service-card">
+                <div class="card" style="width: 18rem;">
+                    <img src="images/IoTvec.jpeg" height="200px" class="card-img-top" alt="Iotvec">
+                    <div class="card-body">
+                        <h5 class="card-title">Link IoT Devices</h5>
+                        <p class="card-text">An IoT device connects physical assets to the internet, enabling remote
+                            monitoring, data collection, and control. This
+                            connectivity enhances efficiency, and real-time insights for improved decision-making.</p>
+                         <!-- Trigger Button for Modal -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#truckDataModal">
+                            Link
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="truckDataModal" tabindex="-1" aria-labelledby="truckDataModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="truckDataModalLabel">Truck and IoT Device Information</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="truckDataForm">
+                                            <div class="mb-3">
+                                                <label for="truckId" class="form-label">Truck ID</label>
+                                                <input type="text" class="form-control" id="truckId" placeholder="Enter Truck ID" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="iotDeviceAddress" class="form-label">IoT Device Address</label>
+                                                <input type="text" class="form-control" id="iotDeviceAddress" placeholder="Enter IoT Device Address" required>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary" onclick="fetchTruckData()">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center text-light bg-dark py-4">
+        <div class="container">
+            <div class="row">
+                <section class="col-md-4 mb-4">
+                    <h5 class="text-uppercase font-weight-bold">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-light">Home</a></li>
+                        <li><a href="about.html" class="text-light">About Us</a></li>
+                        <li><a href="#services" class="text-light">Services</a></li>
+                        <li><a href="#" class="text-light">Contact</a></li>
+                    </ul>
+                </section>
+                <section class="col-md-4 mb-4">
+                    <h5 class="text-uppercase font-weight-bold">Our Services</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light">Real-Time Monitoring</a></li>
+                        <li><a href="#" class="text-light">Advanced Analytics</a></li>
+                        <li><a href="#" class="text-light">Secure Solutions</a></li>
+                    </ul>
+                </section>
+                <section class="col-md-4 mb-4">
+                    <h5 class="text-uppercase font-weight-bold">Follow Us</h5>
+                    <div class="row footer-social-icons mb-2 ">
+                        <div class="row d-inline-flex align-items-center justify-content-start">
+                            <!-- Your icons here -->
+                            <a href="https://www.facebook.com/" class="text-light mx-2" style="font-size: 17px;">
+                                <img src="images/facebook.png" alt="" height="28px">Facebook
+                            </a>
+                            <a href="https://www.instagram.com/" class="text-light mx-2" style="font-size: 17px;">
+                                <img src="images/instagram.png" alt="" height="28px">Instagram
+                            </a>
+                            <a href="https://mail.google.com/mail/u/0/" class="text-light mx-2"
+                                style="font-size: 17px;">
+                                <img src="images/gmail.png" alt="" height="28px">Gmail
+                            </a>
+                        </div>
+                    </div>
+
+                </section>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <hr class="bg-light">
+                    <p class="mb-0">Designed by Hit-N-Run</p>
+                    <p class="mb-0">© 2024 CoalGuard, Inc. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <div class="blur-bg-overlay"></div>
+    <div class="form-popup">
+        <span class="close-btn material-symbols-rounded">close</span>
+        <div class="form-box login">
+            <div class="form-details">
+                <h2>Welcome Back</h2>
+                <p>Please log in using your personal information to stay connected with us.</p>
+            </div>
+            <div class="form-content">
+                <h2>LOGIN</h2>
+                <form action="#">
+                    <div class="input-field">
+                        <input type="text" required>
+                        <label>Email</label>
+                    </div>
+                    <div class="input-field">
+                        <input type="password" required>
+                        <label>Password</label>
+                    </div>
+                    <a href="#" class="forgot-pass-link">Forgot password?</a>
+                    <button type="submit">Log In</button>
+                </form>
+                <div class="bottom-link">
+                    Don't have an account?
+                    <a href="#" id="signup-link">Signup</a>
+                </div>
+            </div>
+        </div>
+        <div class="form-box signup">
+            <div class="form-details">
+                <h2>Create Account</h2>
+                <p>To become a part of our community, please sign up using your personal information.</p>
+            </div>
+            <div class="form-content">
+                <h2>SIGNUP</h2>
+                <form action="#">
+                    <div class="input-field">
+                        <input type="text" required>
+                        <label>Enter your email</label>
+                    </div>
+                    <div class="input-field">
+                        <input type="password" required>
+                        <label>Create password</label>
+                    </div>
+                    <div class="policy-text">
+                        <input type="checkbox" id="policy">
+                        <label for="policy">
+                            I agree to the
+                            <a href="#" class="option">Terms & Conditions</a>
+                        </label>
+                    </div>
+                    <button type="submit">Sign Up</button>
+                </form>
+                <div class="bottom-link">
+                    Already have an account?
+                    <a href="#" id="login-link">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
